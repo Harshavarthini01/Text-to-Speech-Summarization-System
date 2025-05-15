@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Magics of Vocal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Roboto&display=swap" rel="stylesheet"/>   
+  <style>
+    * {margin: 0;padding: 0;box-sizing: border-box;}
+    html, body {height: 100%;font-family: 'Roboto', sans-serif;overflow-x: hidden;scroll-behavior: smooth;}
+    body {
+      background: url('https://i.pinimg.com/736x/5d/96/38/5d9638136a48b203c57cd8ccf053c3ee.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    body::before {
+      content: "";position: fixed;inset: 0;background: rgba(255, 255, 255, 0.5);z-index: -1;
+    }
+    nav {
+      position: fixed;top: 0;width: 100%;background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(10px);display: flex;justify-content: space-between;
+      align-items: center;padding: 1rem 3rem;z-index: 999;
+    }
+    .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #4b0071;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      color: #4b0071;font-weight: bold;text-decoration: none;cursor: pointer;
+    }
+    section {
+      min-height: 100vh;padding: 4rem 2rem;display: flex;
+      justify-content: center;align-items: center;text-align: center;
+    }
+    .section-box {
+      width: 90%;max-width: 1100px;background: rgba(255, 255, 255, 0.95);
+      padding: 3rem;border-radius: 25px;box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+    #login .section-box {
+      max-width: 600px;
+      padding: 2rem;
+      border-radius: 15px;
+    }
+    .login-section,.hero {animation: slideDown 1s ease forwards;}
+    @keyframes slideDown {
+      from {transform: translateY(-100%);opacity: 0;}
+      to {transform: translateY(0);opacity: 1 ;}
+    }
+    .hidden {display: none;}
+    h2 {font-size: 2.5rem;color: #4b0071;margin-bottom: 1rem;}
+    p {font-size: 1.3rem;margin-bottom: 2rem;color: #444;}
+    input[type="email"],input[type="password"],input[type="file"],button,textarea {
+      width: 100%;padding: 1rem;margin: 0.7rem 0;font-size: 1.1rem;
+      border-radius: 10px;border: 1px solid #aaa;
+    }
+    button {
+      background: #4b0071;color: white;font-weight: bold;cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {background: #6e009b;}
+    .faq-question {
+      background-color: #ddd2ef;margin: 1rem 0;padding: 1rem;
+      border-radius: 10px;cursor: pointer;
+    }
+    .faq-answer {
+      display: none;background: #f4edf9;padding: 1rem;border-radius: 10px;
+    }
+    footer {
+      text-align: center;padding: 1.5rem;font-size: 0.95rem;
+      background: rgba(255,255,255,0.4);
+    }
+    .textarea-box {
+      width: 100%;height: 200px;padding: 1rem;font-size: 1.1rem;
+      border-radius: 10px;border: 1px solid #aaa;resize: vertical;
+      background-color: #ffffff;margin-bottom: 1rem;
+    }
+    .summary-buttons {
+      display: flex;flex-wrap: wrap;gap: 1rem;justify-content: center;margin-top: 1rem;
+    }
+    .summary-buttons button {
+      flex: 1 1 100px;
+      font-size: 0.85rem;
+      padding: 0.4rem 0.6rem;
+    }
+    .about-text {
+      font-size: 1.2rem;
+      color: #333;
+      text-align: left;
+      line-height: 1.8;
+    }
+    #countDisplay, #summaryCountDisplay {
+      font-size: 1rem;
+      color: #555;
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+    #loading {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      color: #4b0071;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <nav class="hidden" id="mainNav">
+    <div class="brand">MAGICS OF VOCAL</div>
+    <div class="nav-links">
+      <a onclick="scrollToSection('home')">Home</a>
+      <a onclick="scrollToSection('upload')">Upload</a>
+      <a onclick="scrollToSection('summary')">Summary</a>
+      <a onclick="scrollToSection('faq')">FAQ</a>
+      <a onclick="scrollToSection('about')">About</a>
+    </div>
+  </nav>
+
+  <section id="login" class="login-section">
+    <div class="section-box">
+      <h2>Login to Continue</h2>
+      <input type="email" placeholder="Enter Email" id="email">
+      <input type="password" placeholder="Password" id="password">
+      <button onclick="login()">Login</button>
+    </div>
+  </section>
+
+  <section id="home" class="hero hidden">
+    <div class="section-box">
+      <h2>Empowering Content Through Voice</h2>
+      <p>Upload PDFs or images. Let us summarize the content and bring it to life with speech.</p>
+      <button onclick="revealSections()">Get Started</button>
+    </div>
+  </section>
+
+  <section id="upload" class="hidden">
+    <div class="section-box">
+      <h2>Upload Your Content</h2>
+      <input type="file" id="fileInput" onchange="readFileContent(event)">
+      <textarea class="textarea-box" id="inputText" placeholder="Or paste your text here..." oninput="updateCount()"></textarea>
+      <div id="countDisplay">Words: 0</div>
+      <button onclick="processFile()">Generate Summary</button>
+      <div id="loading" style="display:none;">⏳ Generating summary...</div>
+    </div>
+  </section>
+
+  <section id="summary" class="hidden">
+    <div class="section-box">
+      <h2>AI Generated Summary</h2>
+      <textarea class="textarea-box" id="summaryText" readonly oninput="updateSummaryCount()">Your summary will appear here after processing.</textarea>
+      <div id="summaryCountDisplay">Words: 0</div>
+      <div class="summary-buttons">
+        <button onclick="playSpeech()">🔊 Listen to Summary</button>
+        <button onclick="pauseSpeech()">⏸ Pause</button>
+        <button onclick="stopSpeech()">⏹ Stop</button>
+        <button onclick="deleteSummary()">🗑 Delete</button>
+        <button onclick="namedEntityRecognition()">🏷 Named Entity Recognition</button>
+        <button onclick="downloadSummary()">⬇️ Download Summary</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="hidden">
+    <div class="section-box">
+      <h2>FAQs</h2>
+      <div class="faq-question" onclick="toggleAnswer(this)">What file types can I upload?</div>
+      <div class="faq-answer">You can upload PDFs and common image formats such as JPG and PNG.</div>
+
+      <div class="faq-question" onclick="toggleAnswer(this)">How long does it take to generate a summary?</div>
+      <div class="faq-answer">It usually takes a few seconds depending on the content size.</div>
+
+      <div class="faq-question" onclick="toggleAnswer(this)">Can I listen to the summary?</div>
+      <div class="faq-answer">Yes, our built-in speech synthesis feature allows you to listen to the summary aloud.</div>
+
+      <div class="faq-question" onclick="toggleAnswer(this)">Do I need to create an account?</div>
+      <div class="faq-answer">No, just login with your email and password to use the features.</div>
+
+      <div class="faq-question" onclick="toggleAnswer(this)">Does it support other languages?</div>
+      <div class="faq-answer">Currently, support is limited to English. Multilingual support is coming soon.</div>
+    </div>
+  </section>
+
+  <section id="about" class="hidden">
+    <div class="section-box">
+      <h2>About Us</h2>
+      <p class="about-text">
+        <strong>Magics of Vocal</strong> is not just a tool — it's a vision crafted by four passionate third-year Computer Science Engineering students:
+        <strong>Meena E C,Harshavarthini E, Gomathi M, Lavanya V,</strong>.
+        <br><br>
+        Built with curiosity and creativity, our platform simplifies complex content by turning it into short, easy-to-understand audio summaries.
+        Whether it's a photo, a PDF, or a lengthy document, we believe in making knowledge accessible to everyone — visually, vocally, and instantly.
+        <br><br>
+        We’re building for the future where tech speaks your language — literally. Come experience the magic.
+      </p>
+    </div>
+  </section>
+
+  <footer> 
+    © 2025 Magics of Vocal. Making text speak — anytime, anywhere.
+  </footer>
+
+  <script>
+    let speech;
+
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      if (email && password) {
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("home").classList.remove("hidden");
+        document.getElementById("mainNav").classList.remove("hidden");
+      } else {
+        alert("Please fill in both fields.");
+      }
+    }
+
+    function revealSections() {
+      ['upload', 'summary', 'faq', 'about'].forEach(id => document.getElementById(id).classList.remove("hidden"));
+      scrollToSection("upload");
+    }
+
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+    }
+
+    function updateCount() {
+      const input = document.getElementById('inputText').value;
+      const wordCount = input.trim().split(/\s+/).filter( Boolean).length;
+      document.getElementById('countDisplay').innerText = `Words: ${wordCount}`;
+    }
+
+    function updateSummaryCount() {
+      const text = document.getElementById('summaryText').value;
+      const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+      document.getElementById('summaryCountDisplay').innerText = `Words: ${wordCount}`;
+    }
+
+function readFileContent(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const inputText = document.getElementById('inputText');
+  const fileName = file.name.toLowerCase();
+
+  const isPDF = fileName.endsWith('.pdf');
+  const isImage = /\.(jpg|jpeg|png)$/i.test(fileName);
+  const isText = /\.(txt|md)$/i.test(fileName);
+
+  if (isPDF) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      const typedarray = new Uint8Array(this.result);
+
+      pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+        let pages = [];
+        for (let i = 1; i <= pdf.numPages; i++) {
+          pages.push(
+            pdf.getPage(i).then(page => 
+              page.getTextContent().then(tc =>
+                tc.items.map(item => item.str).join(' ')
+              )
+            )
+          );
+        }
+
+        Promise.all(pages).then(texts => {
+          inputText.value = texts.join('\n\n');
+          updateCount();
+        });
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  } else if (isImage) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      Tesseract.recognize(
+        reader.result,
+        'eng',
+        { logger: m => console.log(m) }
+      ).then(({ data: { text } }) => {
+        inputText.value = text;
+        updateCount();
+      });
+    };
+    reader.readAsDataURL(file);
+  } else if (isText) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      inputText.value = e.target.result;
+      updateCount();
+    };
+    reader.readAsText(file);
+  } else {
+    alert("Unsupported file type.");
+  }
+}
+
+
+    function processFile() {
+      const inputText = document.getElementById('inputText').value.trim();
+      const summary = document.getElementById('summaryText');
+      const loading = document.getElementById('loading');
+    
+      if (!inputText) {
+        alert("Please upload a file or enter text.");
+        return;
+      }
+    
+      loading.style.display = 'block';
+      summary.value = '';
+      updateSummaryCount();
+    
+      fetch('/summarize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ text: inputText })
+      })
+      .then(response => response.json())
+      .then(data => {
+        loading.style.display = 'none';
+        summary.value = data.summary;
+        updateSummaryCount();
+      })
+      .catch(error => {
+        loading.style.display = 'none';
+        alert("Error generating summary: " + error);
+      });scrollToSection('summary')
+    }
+    
+
+    function playSpeech() {
+      const text = document.getElementById("summaryText").value.trim();
+      if (!text) {
+        alert("No summary available to read.");
+        return;
+      }
+      stopSpeech();
+      speech = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.speak(speech);
+    }
+
+    function pauseSpeech() {
+      if (speech) window.speechSynthesis.pause();
+    }
+
+    function stopSpeech() {
+      if (speech) window.speechSynthesis.cancel();
+    }
+
+    function deleteSummary() {
+      document.getElementById("summaryText").value = "";
+      updateSummaryCount();
+    }
+
+    function namedEntityRecognition() {
+      alert("This would highlight named entities in a real application.");
+    }
+
+    function downloadSummary() {
+      const text = document.getElementById("summaryText").value;
+      const blob = new Blob([text], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "summary.txt";
+      link.click();
+    }
+
+    function toggleAnswer(el) {
+      const answer = el.nextElementSibling;
+      answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+    }
+  </script>
+</body>
+</html>
